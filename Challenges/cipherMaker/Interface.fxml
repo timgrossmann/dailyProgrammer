@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <BorderPane prefHeight="400.0" prefWidth="600.0">
+         <right>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label prefHeight="6.0" prefWidth="140.0" text="Choose a Cipher:" />
+                  <ChoiceBox fx:id="choiceBox" prefWidth="150.0" />
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets bottom="10.0" top="20.0" />
+                     </padding>
+                  </Separator>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="enSaveLabel" textFill="RED" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="5.0" prefWidth="133.0" text="Encipher your Text here..." />
+                        <Button fx:id="encipherButton" mnemonicParsing="false" onAction="#encipherButtonClick" text="Encipher" GridPane.rowIndex="1" />
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClick" text="Save..." GridPane.rowIndex="2" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </GridPane>
+                  <Separator prefWidth="200.0">
+                     <padding>
+                        <Insets bottom="10.0" top="20.0" />
+                     </padding>
+                  </Separator>
+                  <GridPane>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label text="Decipher your Text here..." />
+                        <Button fx:id="decipherButton" mnemonicParsing="false" onAction="#decipherButtonClick" text="Decipher" GridPane.rowIndex="2" />
+                        <Button fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open..." GridPane.rowIndex="1" />
+                        <Label fx:id="deOpenLabel" textFill="RED" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </right>
+         <center>
+            <TextArea fx:id="textArea" prefHeight="200.0" prefWidth="200.0" styleClass="textArea" BorderPane.alignment="CENTER" />
+         </center></BorderPane>
+      
+   </children>
+</AnchorPane>

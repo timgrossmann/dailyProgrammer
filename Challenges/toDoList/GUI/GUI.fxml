@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <SplitPane dividerPositions="0.6655518394648829" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <ListView fx:id="list" layoutX="90.0" layoutY="99.0" prefHeight="398.0" prefWidth="379.0" styleClass="list" stylesheets="@../../bin/application/application.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <BorderPane layoutX="26.0" layoutY="86.0" prefHeight="398.0" prefWidth="251.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <center>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label text="Add (Insert Item to add)">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="textField" onAction="#textFieldFill">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="20.0" right="20.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label fx:id="warningAddLabel" textFill="RED">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="addButton" mnemonicParsing="false" onAction="#addButtonClick" text="Add Item" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="50.0" />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox alignment="CENTER">
+                                 <children>
+                                    <Label text="Delete (Insert Index)">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <TextField fx:id="indexField" onAction="#indexFieldFill">
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="60.0" right="60.0" />
+                                       </VBox.margin>
+                                    </TextField>
+                                    <Label fx:id="warningDelLabel" textFill="RED">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <Button fx:id="delButton" mnemonicParsing="false" onAction="#delButtonClick" text="Delete Item" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="50.0" />
+                                 </VBox.margin>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </center>
+                     <top>
+                        <MenuBar stylesheets="@../../bin/application/application.css" BorderPane.alignment="CENTER">
+                          <menus>
+                              <Menu id="nameTag" disable="true" mnemonicParsing="false" text="ToDoList" />
+                            <Menu mnemonicParsing="false" text="File">
+                              <items>
+                                <MenuItem fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClick" text="Save">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                    <MenuItem fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAsButtonClick" text="Save As">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                    <MenuItem fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                    <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeButtonClick" text="Close" />
+                              </items>
+                            </Menu>
+                            <Menu mnemonicParsing="false" text="Edit">
+                              <items>
+                                    <MenuItem fx:id="undoButton" mnemonicParsing="false" onAction="#undoButtonClick" text="Undo">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                <MenuItem fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonClick" text="Clear">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="DIGIT1" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                    <MenuItem fx:id="sortButton" mnemonicParsing="false" onAction="#sortButtonClick" text="Sort">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="DIGIT2" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                                    <MenuItem fx:id="shuffleButton" mnemonicParsing="false" onAction="#shuffleButtonClick" text="Shuffle">
+                                       <accelerator>
+                                          <KeyCodeCombination alt="UP" code="DIGIT3" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                       </accelerator>
+                                    </MenuItem>
+                              </items>
+                            </Menu>
+                          </menus>
+                        </MenuBar>
+                     </top>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,15 @@
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+
+.list {
+	-fx-font-size: 1.25em; 
+	-fx-background-insets: 0;
+}
+
+#nameTag {
+	-fx-font-family: Helvetiva;
+	-fx-font-style: italic;
+	-fx-font-size: 1.1em;
+}
+
+
+
