@@ -1,0 +1,107 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head>
+    <title>Testing</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body { 
+                margin: 0px; background-color: #000000;
+                overflow: hidden;
+            } 
+        </style>
+    </head>
+    
+    <body>
+    
+        
+        <script src="three.min.js"></script>
+        <script src="OrbitControls.js"></script>
+        <script src="ShadowMaterial.js"></script>
+        <script>
+            
+            var controls;
+        
+            init();
+            function init() {
+                
+                //setting up the scene
+                var scene = new THREE.Scene();
+                
+                //setting up the renderer
+                var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true });
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                
+                renderer.shadowMap.enabled = true;
+                renderer.shadowMapType = THREE.PCFSoftShadowMap;
+                renderer.setClearColor(0x555555, 1.0);
+                renderer.clear();
+                
+                //setting up the camera
+                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 ); 
+                camera.position.z = 7;
+                camera.position.y = 5;
+                camera.position.x = 5;
+                
+                //light
+                var ambient = new THREE.AmbientLight(0xFFFFFF, 0.25);
+                
+                var spotKey = new THREE.SpotLight(0xFFFFFF, 1);
+                spotKey.angle = 0.1;
+                spotKey.position.set(10, 10, 10);
+                spotKey.shadow.mapSize.height = spotKey.shadow.mapSize.width = 2048;
+                spotKey.castShadow = true;
+                spotKey.shadowCameraHelper = new THREE.CameraHelper( spotKey.shadow.camera ); // colored lines
+                
+                scene.add(ambient);
+                scene.add(spotKey.shadowCameraHelper);
+                scene.add(spotKey);
+
+                
+                //activate the orbiting controls
+                controls = new THREE.OrbitControls(camera);
+                
+                //Meshes
+                var grid = new THREE.GridHelper(10, 2);
+                grid.position.y = -1;
+                scene.add(grid);
+                
+                var axis = new THREE.AxisHelper(3);
+                axis.position.y = -0.99;
+                scene.add(axis);
+                
+                var cube = new THREE.BoxGeometry(2,2,2);
+                var cubeMat = new THREE.MeshPhongMaterial({color: 0xAAAAAA});
+                var cubeMesh = new THREE.Mesh(cube, cubeMat);
+                cubeMesh.castShadow = true;
+                cubeMesh.receiveShadow = true;
+                scene.add(cubeMesh);
+                
+                var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(50,50), new THREE.ShadowMaterial());
+                floor.rotation.x = -Math.PI/2;
+                floor.position.y = -1;
+                floor.receiveShadow = true;
+                scene.add(floor);
+                
+                animate();
+                function animate() {
+                    requestAnimationFrame(animate); 
+                    render();
+                }
+                
+                
+                function render(){ 
+                    renderer.render(scene, camera);
+                }
+                
+                
+                //adding the renderer to the DOM
+                document.body.appendChild( renderer.domElement );
+                
+                
+            }
+        
+        
+        </script>
+    </body>
+</html>

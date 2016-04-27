@@ -1,0 +1,243 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head>
+    <title>My Snowman case</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style>
+            body { 
+                margin: 0px; background-color: #000000;
+                overflow: hidden;
+            } 
+        </style>
+    </head>
+    
+    <body>
+    
+        
+       
+        <script src="three.min.js"></script>
+        <script src="OrbitControls.js"></script>
+        <script src="KeyboardState.js"></script>
+        <script src="dat.gui.min.js"></script>
+        <script src="Mirror.js"></script>
+        <script>
+            var controls;
+            
+            var clock = new THREE.Clock();
+            var keyboard = new THREEx.KeyboardState();
+            
+            init();
+            function init(){
+            var scene = new THREE.Scene();
+            //Camera will be here, see page 8
+            // The renderer object
+            var renderer = new THREE.WebGLRenderer();
+            //If you change the window size this takes care of that //http://threejs.org/docs/#Reference/Renderers/WebGLRenderer
+                
+            var verticalMirror;
+            var particles = [];
+
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 ); 
+            camera.position.z = 10;
+            camera.position.y = 5;
+            controls = new THREE.OrbitControls( camera );
+            controls.minDistance = 5.0; 
+            // how far can you zoom in
+            controls.maxDistance = 100.0; 
+            // how far can you zoom out
+            controls.minPolarAngle = 0;
+            controls.maxPolarAngle = Math.PI * 0.495;
+
+            var light = new THREE.SpotLight(0xFFFFFF, 1);
+            light.angle = Math.PI / 5;
+            light.position.set(80, 80, 80);  
+            var ambient = new THREE.AmbientLight(0x888888);
+                
+            light.castShadow = true;
+            light.shadow.mapSize.width = 2048;
+            light.shadow.mapSize.height = 2048 ;
+
+            renderer.setSize( window.innerWidth, window.innerHeight );
+                
+            renderer.setClearColor(0xccf2ff, 1.0);
+            renderer.clear();
+                
+            renderer.shadowMapEnabled = true;
+                
+            document.body.appendChild( renderer.domElement );
+                
+            //3D geometry objects will be here
+            var texture = new THREE.TextureLoader().load( 'textures/crate.gif');
+            var snow = new THREE.TextureLoader().load( 'textures/snow.jpg');
+            var stonesDiff = new THREE.TextureLoader().load( 'textures/stones.jpg');
+            var stonesSpec = new THREE.TextureLoader().load( 'textures/stones_spec.jpg');
+            var stonesNorm = new THREE.TextureLoader().load( 'textures/stones_norm.jpg');
+            // How to create geometry and put together
+            var lowerBody = new THREE.SphereGeometry( 2, 6, 6);
+            var upperBody = new THREE.SphereGeometry(1.5, 6, 6);
+            var head = new THREE.SphereGeometry(0.75, 6, 6);
+            var arms = new THREE.CylinderGeometry(0.2, 0.25, 2.5, 6, 6);
+            var floor = new THREE.PlaneGeometry(25, 25, 2, 2);
+                
+            var material = new THREE.MeshBasicMaterial( { map: texture } );
+            var floorMat = new THREE.MeshPhongMaterial({map: snow, side: THREE.DoubleSide});
+            var bottomMat = new THREE.MeshPhongMaterial({map: stonesDiff, normalMap: stonesNorm, specularMap: stonesSpec, shininess: 5, specular: 0x555555});
+                
+            var urls = ['skybox/px.jpg', 'skybox/nx.jpg', 'skybox/py.jpg', 'skybox/ny.jpg', 'skybox/pz.jpg', 'skybox/nz.jpg'];
+                
+            var cubeMap = THREE.ImageUtils.loadTextureCube(urls);
+            cubeMap.format = THREE.RGBFormat;
+                
+            var shader = THREE.ShaderLib['cube']; // init cube shader from built-in lib
+            shader.uniforms['tCube'].value = cubeMap; // apply textures to shader
+                
+            // create shader material
+            var skyBoxMaterial = new THREE.ShaderMaterial( {
+                fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: shader.uniforms,
+                depthWrite: false,
+                side: THREE.BackSide 
+            });
+                
+            var skybox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000),
+            skyBoxMaterial); 
+                
+                
+            var lowerBMesh = new THREE.Mesh(lowerBody, bottomMat );
+            var upperBMesh = new THREE.Mesh(upperBody, material);
+            var headMesh = new THREE.Mesh(head, material);
+            var leftArmMesh = new THREE.Mesh(arms, material);
+            var rightArmMesh = new THREE.Mesh(arms, material);
+            var floorMesh = new THREE.Mesh(floor, floorMat);
+                
+            upperBMesh.position.y = 3;
+            headMesh.position.y = 5;
+            leftArmMesh.position.x = 2.25;
+            rightArmMesh.position.x = -2.25;
+            leftArmMesh.position.y = 2.5;
+            rightArmMesh.position.y = 2.5;
+            floorMesh.position.y = -2;
+            
+            leftArmMesh.rotation.z = -90;
+            rightArmMesh.rotation.z = 90;
+            floorMesh.rotateX(THREE.Math.degToRad(90));
+                
+            floorMesh.receiveShadow = true;
+            
+                
+            //Vertical mirror
+            verticalMirror = new THREE.Mirror( renderer, camera, { clipBias: 0.003, textureWidth: window.InnerWidth, textureHeight: window.InnerHeight, color:0x889999 } );
+            var verticalMirrorMesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20, 20 ), verticalMirror.material );
+            verticalMirrorMesh.add( verticalMirror ); verticalMirrorMesh.position.y = 8; verticalMirrorMesh.position.z = -12;
+            
+                
+            //GUI
+            var gui = new dat.GUI();
+            
+            var headGui = gui.addFolder('Size of the head');
+            headGui.add(headMesh.scale, "x").min(0.1).max(10).step(0.1).name("X-Axis");
+            headGui.add(headMesh.scale, "y").min(0.1).max(10).step(0.1).name("Y-Axis");
+            headGui.add(headMesh.scale, "z").min(0.1).max(10).step(0.1).name("Z-Axis");    
+                
+            var upperBodyGui = gui.addFolder("Size of the UpperBody");
+            upperBodyGui.add(upperBMesh.scale, "x").min(0.1).max(10).step(0.1).name("X-Axis");
+            upperBodyGui.add(upperBMesh.scale, "y").min(0.1).max(10).step(0.1).name("Y-Axis");
+            upperBodyGui.add(upperBMesh.scale, "z").min(0.1).max(10).step(0.1).name("Z-Axis");
+                
+            var lowerBodyGui = gui.addFolder("Size of the LowerBody");
+            lowerBodyGui.add(lowerBMesh.scale, "x").min(0.1).max(10).step(0.1).name("X-Axis");
+            lowerBodyGui.add(lowerBMesh.scale, "y").min(0.1).max(10).step(0.1).name("Y-Axis");
+            lowerBodyGui.add(lowerBMesh.scale, "z").min(0.1).max(10).step(0.1).name("Z-Axis");
+                
+                
+            //PArticles Snow
+            particles = new THREE.Geometry;
+                for (var p = 0; p <= 10000; p++) {
+                    var particle = new THREE.Vector3(Math.random() * 500 - 250, Math.random() * 500 - 250, Math.random() * 500 - 250); particles.vertices.push(particle);
+                }
+            var particleTexture = THREE.ImageUtils.loadTexture('./textures/snowflake.png');
+            
+            var particleMaterial = new THREE.PointsMaterial({map: particleTexture, transparent: true, opacity: 0.8, color: 0xFFFFFF, size: 2 });
+                
+                
+                
+            // adding object to scene
+            scene.add(floorMesh);  
+            scene.add(light);
+            scene.add(ambient);
+            scene.add(skybox);
+            scene.add( verticalMirrorMesh );
+                
+            
+            scene.add(lowerBMesh);
+            lowerBMesh.castShadow = true;
+            lowerBMesh.receiveShadow = true;
+            
+            scene.add(upperBMesh);
+            upperBMesh.castShadow = true;
+            upperBMesh.receiveShadow = true;
+                
+            scene.add(headMesh);
+            headMesh.castShadow = true;
+            headMesh.receiveShadow = true;
+                
+            scene.add(leftArmMesh);
+            leftArmMesh.castShadow = true;
+            leftArmMesh.receiveShadow = true;
+        
+            scene.add(rightArmMesh);
+            rightArmMesh.castShadow = true;
+            rightArmMesh.receiveShadow = true;
+                
+                
+            var snowmanGroup = new THREE.Group();
+            snowmanGroup.add(lowerBMesh);
+            snowmanGroup.add(upperBMesh);
+            snowmanGroup.add(headMesh);
+            snowmanGroup.add(leftArmMesh);
+            snowmanGroup.add(rightArmMesh);
+            scene.add(snowmanGroup);
+                
+            var particleSystem = new THREE.ParticleSystem(particles, particleMaterial);
+            particleSystem.position.y = 300;
+            scene.add(particleSystem);
+                
+            
+                
+            animate();
+            function animate(){ 
+                requestAnimationFrame( animate); 
+                
+                particleSystem.position.y -= 0.5; particleSystem.position.x -= 0.01; particleSystem.position.z -= 0.01;
+                
+                movingSnowman(new Date().getTime());
+                
+                snowmanGroup.rotateY(0.05);
+                
+                render();
+            }
+                
+            function movingSnowman(time) {
+                controls.update();
+                var moveDistance = 10 * clock.getDelta();
+                
+                if (keyboard.pressed("A")) {       
+                    snowmanGroup.translateX( -moveDistance );
+                }
+                if ( keyboard.pressed("D") ) {                 snowmanGroup.translateX( moveDistance );
+                }
+                if ( keyboard.pressed("W") ) {                  snowmanGroup.translateZ( -moveDistance );
+                }
+                if ( keyboard.pressed("S") ) {                  snowmanGroup.translateZ( moveDistance );
+                }
+                
+            }
+                
+            function render(){ 
+                renderer.render(scene, camera);
+                verticalMirror .render();
+            } 
+            } 
+        </script>
+    </body>
+</html>
