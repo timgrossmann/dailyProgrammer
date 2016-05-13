@@ -18,22 +18,27 @@
         <script src="three.min.js"></script>
         <script src="OrbitControls.js"></script>
         <script src="ShadowMaterial.js"></script>
+        <!--<script src="Projector.js"></script>-->
         <script>
             
             var controls;
+            var projector, mouse = { x: 0, y: 0 };
+            var targetList = [];
+            var scene, camera;
+            var cameraposRelease, cameraposClick;
         
             init();
             function init() {
                 
                 //setting up the scene
-                var scene = new THREE.Scene();
+                scene = new THREE.Scene();
                 
                 //setting up the renderer
                 var renderer = new THREE.WebGLRenderer({alpha: true, antialias: true });
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 
                 renderer.shadowMap.enabled = true;
-                renderer.shadowMapType = THREE.PCFSoftShadowMap;
+                renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                 renderer.setClearColor(0x555555, 1.0);
                 renderer.clear();
                 
@@ -46,25 +51,27 @@
                 //light
                 var ambient = new THREE.AmbientLight(0xFFFFFF, 0.25);
                 
-                var spotKey = new THREE.SpotLight(0xFFFFFF, 1);
-                spotKey.angle = 0.1;
-                spotKey.position.set(10, 10, 10);
+                var spotKey = new THREE.DirectionalLight(0xFFFFFF, 1);
                 spotKey.shadow.mapSize.height = spotKey.shadow.mapSize.width = 2048;
                 spotKey.castShadow = true;
-                spotKey.shadowCameraHelper = new THREE.CameraHelper( spotKey.shadow.camera ); // colored lines
+
+                //LightHelper
+                /*spotKey.shadowCameraHelper = new THREE.CameraHelper( spotKey.shadow.camera ); // colored lines*/
                 
                 scene.add(ambient);
-                scene.add(spotKey.shadowCameraHelper);
                 scene.add(spotKey);
+                
+                //uncomment for lightHelper
+                //scene.add(spotKey.shadowCameraHelper);
 
                 
                 //activate the orbiting controls
                 controls = new THREE.OrbitControls(camera);
                 
                 //Meshes
-                var grid = new THREE.GridHelper(10, 2);
+                /*var grid = new THREE.GridHelper(10, 2);
                 grid.position.y = -1;
-                scene.add(grid);
+                scene.add(grid);*/ 
                 
                 var axis = new THREE.AxisHelper(3);
                 axis.position.y = -0.99;
@@ -77,9 +84,17 @@
                 cubeMesh.receiveShadow = true;
                 scene.add(cubeMesh);
                 
+                var heightPlane = new THREE.PlaneGeometry(50, 50, 1);
+                var planeMat = new THREE.MeshBasicMaterial({color: 0xCCCCCC});
+                var heightPlaneMesh = new THREE.Mesh(heightPlane, planeMat);
+                
+                heightPlaneMesh.rotateX(Math.PI / -2);
+                heightPlaneMesh.position.y = -1;
+                scene.add(heightPlaneMesh);
+                
                 var floor = new THREE.Mesh(new THREE.PlaneBufferGeometry(50,50), new THREE.ShadowMaterial());
                 floor.rotation.x = -Math.PI/2;
-                floor.position.y = -1;
+                floor.position.y = -0.99;
                 floor.receiveShadow = true;
                 scene.add(floor);
                 
@@ -94,6 +109,71 @@
                     renderer.render(scene, camera);
                 }
                 
+                //Interaction on Click
+                // initialize object to perform world/screen calculations
+                //projector = new THREE.Projector();
+                
+                // when the mouse moves, call the given function
+	            document.addEventListener( 'mousedown', clickedMouse, false );
+	
+                document.addEventListener( 'mouseup', releasedMouse, false );
+                
+                function releasedMouse(event) {
+                    
+                    cameraposRelease = camera.getWorldPosition();
+                    //console.log(cameraposRelease);
+                    
+                    if(cameraposClick.x !== cameraposRelease.x) {
+                        console.log("orbit");
+                    } else {
+                        
+                        // update the mouse variable
+                        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+                        console.log("MouseX: " + mouse.x + " - MouseY: " + mouse.y);
+
+                        raycaster = new THREE.Raycaster();
+
+                        var vector = new THREE.Vector3( mouse.x, mouse.y, 1 ).unproject( camera );
+
+                        raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
+
+                        var intersects = raycaster.intersectObjects( scene.children );
+
+                        var vec = raycaster.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 1 - 0.125));
+
+                        console.log("X: " + vec.x);
+                        console.log("Y: " + vec.y);
+                        console.log("Z: " + vec.z);
+
+                        var ge = new THREE.BoxBufferGeometry( 0.25, 0.25, 0.25 );
+
+                        var my = new THREE.MeshPhongMaterial( { 
+                        color: 0xFF0000} );
+                        ms = new THREE.Mesh( ge, my );
+
+                        ms.castShadow = true;
+                        ms.position.x=vec.x; 
+                        ms.position.y=vec.y; 
+                        ms.position.z=vec.z;
+                        scene.add( ms );
+
+                        console.log("");
+                        
+                        
+                    }
+                    
+                }
+                
+                function clickedMouse(event) {
+                    
+                    //console.log("clicked");
+                    
+                    cameraposClick = camera.getWorldPosition();
+                    //console.log(cameraposClick);
+
+                }
                 
                 //adding the renderer to the DOM
                 document.body.appendChild( renderer.domElement );
