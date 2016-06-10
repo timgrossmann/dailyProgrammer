@@ -1,0 +1,26 @@
+{"status_code": "OK",
+ "status_msg": "All images in request have completed successfully. ",
+ "results": [
+	
+	{
+		"docid_str": "f164ae5874aadb0fb05f7c9ea9ef0619", 
+		"url": "http://www.patrasevents.gr/imgsrv/f/full/613802.png",
+		
+	"colors": [
+			{"w3c": {"hex": "#483d8b",
+			 "name": "DarkSlateBlue"},
+			 "hex": "#6f64a1", "density": 0.69674999999999998},
+
+			 {"w3c": {"hex": "#000000", "name": "Black"},
+			 "hex": "#0a0e18", "density": 0.098000000000000004},
+			
+			 {"w3c": {"hex": "#bc8f8f", "name": "RosyBrown"},
+			 "hex": "#9b746f", "density": 0.075749999999999998},
+
+			 {"w3c": {"hex": "#e6e6fa", "name": "Lavender"},
+			 "hex": "#ebe7f4", "density": 0.1295}],
+			 "docid":12709013694360520217}
+		]
+
+}
+
