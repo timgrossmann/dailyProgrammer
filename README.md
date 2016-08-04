@@ -9,3 +9,6 @@ https://www.hackerrank.com/timgrossmannn
 //Javascript-Web
 http://codepen.io/timgrossmann/
 https://www.freecodecamp.com/timgrossmann
+
+//Python
+http://www.practicepython.org
