@@ -35,11 +35,14 @@ def renameFiles ():
         if not item.startswith(".") and not wrongFile:
             oldItem = item
             
-            for char in "[](){}'#*_-?:;!%|,— `´<>^°§¡“¶¢≠¿'":
+            for char in "[](){}'#*_-–?:;!%|,— `´<>^°§¡“¶¢≠¿'":
                 if char in item:
                     item = item.replace(char, " ")
 
-            item = oldItem.capitalize() if oldItem == item else item.title()
+            item = oldItem if oldItem == item else item.title()
+            
+            if item[0].islower():
+                item = item.capitalize()
 
             item = re.sub(" +", "", item)
             
