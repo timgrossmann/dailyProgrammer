@@ -11,4 +11,5 @@ http://codepen.io/timgrossmann/
 https://www.freecodecamp.com/timgrossmann
 
 //Python
-http://www.practicepython.org
+http://www.practicepython.org/
+https://automatetheboringstuff.com
